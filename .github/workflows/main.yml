@@ -1,9 +1,11 @@
+
 name: LUA XIT 7x
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build:
@@ -22,4 +24,3 @@ jobs:
         with:
           name: LUA-XIT-7x
           path: Principal.lua
-concurrency: 
