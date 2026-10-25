@@ -1,0 +1,25 @@
+name: LUA XIT 7x
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Preparar arquivos
+        run: |
+          echo "Projeto LUA XIT 7x"
+          ls -la
+
+      - name: Guardar arquivo Lua
+        uses: actions/upload-artifact@v4
+        with:
+          name: LUA-XIT-7x
+          path: Principal.lua
+concurrency: 
