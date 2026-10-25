@@ -1,17 +1,33 @@
 
-plugins {
-    id("com.android.application") version "8.7.3"
-}
+name: Build LUA XIT 7x APK
 
-android {
-    namespace = "com.luaxit.sevenx"
-    compileSdk = 35
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
 
-    defaultConfig {
-        applicationId = "com.luaxit.sevenx"
-        minSdk = 23
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
-    }
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Compilar APK
+        run: |
+          gradle --version
+          gradle assembleDebug
+
+      - name: Guardar APK
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: LUA-XIT-7x-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
