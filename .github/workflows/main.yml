@@ -1,36 +1,42 @@
 
-name: Build LUA XIT 7x APK
+plugins {
+    id("com.android.application") version "8.7.3"
+    id("org.jetbrains.kotlin.android") version "2.0.21"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21"
+}
 
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
+android {
+    namespace = "com.luaxit.sevenx"
+    compileSdk = 35
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+    defaultConfig {
+        applicationId = "com.luaxit.sevenx"
+        minSdk = 23
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
 
-    steps:
-      - name: Baixar projeto
-        uses: actions/checkout@v4
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
-      - name: Configurar Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
-      - name: Configurar Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: '8.9'
+    buildFeatures {
+        compose = true
+    }
+}
 
-      - name: Compilar APK
-        run: gradle assembleDebug
-
-      - name: Disponibilizar APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: LUA-XIT-7x-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+dependencies {
+    implementation(platform("androidx.compose:compose-bom:2024.12.01"))
+    implementation("androidx.activity:activity-compose:1.10.0")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material:material-icons-extended")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+}
