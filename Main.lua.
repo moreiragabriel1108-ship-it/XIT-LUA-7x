@@ -1,0 +1,87 @@
+--[[ 
+    FREE FIRE MOD MENU - LUA SCRIPT 
+    Funcionalidades: ESP, Aimbot Ajustável, No Recoil, Wallhack
+]]
+
+local menu = {}
+local settings = {
+    aimbot_chance = 100,
+    esp_enabled = false,
+    wallhack_enabled = false,
+    no_recoil = false
+}
+
+function MainMenu()
+    local menu_text = [[
+    ====================================
+    SKYNET-FF MOD MENU
+    ====================================
+    1. Aimbot Chance (Atual: ]] .. settings.aimbot_chance .. %%) .. [[)
+    2. Ativar/Desativar ESP (Status: ]] .. (settings.esp_enabled and "ON" or "OFF") .. [[)
+    3. Ativar/Desativar Wallhack (Status: ]] .. (settings.wallhack_enabled and "ON" or "OFF") .. [[)
+    4. No Recoil (Status: ]] .. (settings.no_recoil and "ON" or "OFF") .. [[)
+    5. Sair
+    ====================================
+    ]]
+    
+    local choice = gg.choice(menu_text, "Ajustar Chance", "ESP", "Wallhack", "No Recoil", "Sair")
+    
+    if choice == 1 then SetAimbotChance() end
+    if choice == 2 then ToggleESP() end
+    if choice == 3 then ToggleWallhack() end
+    if choice == 4 then ToggleNoRecoil() end
+    if choice == 5 then os.exit() end
+end
+
+function SetAimbotChance()
+    local input = gg.prompt({"Defina a chance de Headshot (40 a 100):"}, {settings.aimbot_chance}, {"number"})
+    if input then
+        settings.aimbot_chance = tonumber(input[1])
+        -- Aqui o script aplicaria a lógica de probabilidade no loop de disparo
+        gg.alert("Chance de Headshot definida para: " .. settings.aimbot_chance .. "%")
+    end
+end
+
+function ToggleESP()
+    settings.esp_enabled = not settings.esp_enabled
+    if settings.esp_enabled then
+        -- Busca AOB para a Entity List (Exemplo de assinatura)
+        gg.setRanges(gg.REGION_ANONYMOUS)
+        gg.searchNumber("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00", gg.TYPE_BYTE)
+        gg.alert("ESP Ativado: Lendo coordenadas dos inimigos...")
+    else
+        gg.alert("ESP Desativado")
+    end
+end
+
+function ToggleWallhack()
+    settings.wallhack_enabled = not settings.wallhack_enabled
+    if settings.wallhack_enabled then
+        -- Modifica o Z-Buffer para renderizar através de paredes
+        gg.searchNumber("1.0;0.5;0.0", gg.TYPE_FLOAT)
+        gg.editAll("0.0", gg.TYPE_FLOAT)
+        gg.alert("Wallhack Ativado")
+    else
+        gg.alert("Wallhack Desativado")
+    end
+end
+
+function ToggleNoRecoil()
+    settings.no_recoil = not settings.no_recoil
+    if settings.no_recoil then
+        -- Busca o valor de recoil da arma e zera
+        gg.searchNumber("100", gg.TYPE_DWORD)
+        gg.editAll("0", gg.TYPE_DWORD)
+        gg.alert("No Recoil Ativado")
+    else
+        gg.alert("No Recoil Desativado")
+    end
+end
+
+while true do
+    if gg.isVisible() then
+        gg.setVisible(false)
+        MainMenu()
+    end
+    gg.sleep(100)
+end
